@@ -1,0 +1,38 @@
+Where to replace the icon with our icon:
+
+heidi-studio\client\public\favicon.png
+
+The HTML code is located at: 
+
+heidi-studio/client/index.html
+
+On this index.html file, we have to update the Opengraph code:
+
+This Opengraph code NEEDS TO BE REPLACED in heidi-studio\client\index.html
+
+    <meta property="og:title" content="Heidi Studio" />
+    <meta property="og:description" content="A creator studio with dashboards, recording, teleprompter, editing, highlights, and publishing workflows—powered by Heidi." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://replit.com/public/images/opengraph.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@replit" />
+    <meta name="twitter:title" content="Heidi Studio" />
+    <meta name="twitter:description" content="A creator studio with dashboards, recording, teleprompter, editing, highlights, and publishing workflows—powered by Heidi." />
+    <meta name="twitter:image" content="https://replit.com/public/images/opengraph.png" />
+
+
+REPLACE IT WITH THIS (and check my image references - you may need to update them):
+
+    <meta property="og:title" content="Dragon Clan Monetization" />
+    <meta property="og:description" content=" an AI-powered creator monetization dashboard built for Dragon Clan TV. It gives content creators a single command center ." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://dragonclantv.ai/images/opengraph.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+     <meta name="twitter:title" content="Dragon Clan Monetizer (DCM)" />
+    <meta name="twitter:description" content="AI Tools Arsenal, Ad Read Generator, Track Earnings, Manage Subscription Tiers, Podcast AI Studio,Dragon Points & Quests,Heidi AI Chat, Community Hub, Clip Post Generator  —powered by Heidi." />
+    <meta name="twitter:image" content="https://dragonclantv.ai/images/opengraph.png" />
+
+
+
+
+
