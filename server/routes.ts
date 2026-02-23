@@ -1,6 +1,26 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+
+// ── Redis De-Dupe Registration ──
+// Registers new users with the cross-system Redis cache for email deduplication.
+const REDIS_CACHE_URL = "https://heidi-dev-functions.azurewebsites.net/api/cache/register";
+
+async function registerWithRedisCache(email: string, creatorId: string): Promise<void> {
+  try {
+    const resp = await fetch(REDIS_CACHE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, creatorId, system: "dcm" }),
+    });
+    const data = await resp.json();
+    console.log(`[redis-cache] Registered ${email} → dcm (status ${resp.status}, systems: ${JSON.stringify(data.systems || [])})`);
+  } catch (err: any) {
+    // Non-fatal — log but don't block user creation
+    console.warn(`[redis-cache] Failed to register ${email}: ${err.message}`);
+  }
+}
+
 // ╔══════════════════════════════════════════════════════════════════════════════╗
 // ║  AZURE OPENAI INTEGRATION — see server/azure-openai.ts for full details   ║
 // ║  Required secrets (set in Replit Secrets tab before publishing):           ║
@@ -234,6 +254,9 @@ export async function registerRoutes(
         password: "dragon2026",
         displayName: "Commander John",
       });
+
+      // Register with Redis de-dupe cache
+      await registerWithRedisCache("commander_john@dragonclantv.ai", user.id);
 
       await storage.updateUser(user.id, {
         level: 42,

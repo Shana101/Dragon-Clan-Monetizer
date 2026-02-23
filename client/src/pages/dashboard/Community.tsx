@@ -4,8 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { MessageSquare, Heart, Share2, MoreHorizontal, Search, Loader2 } from "lucide-react";
-import { usePosts, useLikePost, useCreatePost, getUserId } from "@/lib/hooks";
+import { MessageSquare, Heart, Share2, MoreHorizontal, Search, Loader2, Wand2 } from "lucide-react";
+import { usePosts, useLikePost, useCreatePost, getUserId, useAiCommentReply } from "@/lib/hooks";
+import { useState } from "react";
 
 function timeAgo(date: Date | string): string {
   const now = new Date();
@@ -25,6 +26,8 @@ function timeAgo(date: Date | string): string {
 export default function Community() {
   const { data: posts, isLoading } = usePosts();
   const likePost = useLikePost();
+  const aiReply = useAiCommentReply();
+  const [aiReplies, setAiReplies] = useState<Record<string, string>>({});
 
   if (isLoading) {
     return (
@@ -92,10 +95,30 @@ export default function Community() {
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-500">
                       <MessageSquare className="w-4 h-4 mr-2" /> {post.replies > 0 ? post.replies : "Reply"}
                     </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-muted-foreground hover:text-purple-500"
+                      onClick={() => {
+                        aiReply.mutate(
+                          { comment: post.content },
+                          { onSuccess: (data) => setAiReplies((prev) => ({ ...prev, [post.id]: data.reply })) }
+                        );
+                      }}
+                      disabled={aiReply.isPending}
+                    >
+                      <Wand2 className="w-4 h-4 mr-2" /> {aiReply.isPending ? "Thinking..." : "AI Reply"}
+                    </Button>
                     <Button variant="ghost" size="sm" className="text-muted-foreground">
                       <Share2 className="w-4 h-4 mr-2" /> Share
                     </Button>
                   </div>
+                  {aiReplies[post.id] && (
+                    <div className="mt-2 p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
+                      <p className="text-xs text-purple-400 font-bold mb-1">AI-Generated Reply</p>
+                      <p className="text-sm text-muted-foreground">{aiReplies[post.id]}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )) : (

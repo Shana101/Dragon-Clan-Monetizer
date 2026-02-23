@@ -24,10 +24,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useAiAdRead } from "@/lib/hooks";
 
 export default function PodcastStudio() {
   const [isRecording, setIsRecording] = useState(false);
   const [activeClone, setActiveClone] = useState("heidi-main");
+  const [adScript, setAdScript] = useState<string | null>(null);
+  const aiAdRead = useAiAdRead();
 
   return (
     <Layout>
@@ -281,10 +284,26 @@ export default function PodcastStudio() {
                   </p>
                 </div>
                 
-                <Button className="w-full bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-500 border border-yellow-600/50">
+                <Button 
+                  className="w-full bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-500 border border-yellow-600/50"
+                  onClick={() => {
+                    aiAdRead.mutate(
+                      { sponsorName: "CyberGhost VPN", sponsorDescription: "Fast, secure VPN service" },
+                      { onSuccess: (data) => setAdScript(data.script) }
+                    );
+                  }}
+                  disabled={aiAdRead.isPending}
+                >
                   <Wand2 className="w-4 h-4 mr-2" />
-                  Generate Ad Read
+                  {aiAdRead.isPending ? "Generating..." : "Generate Ad Read"}
                 </Button>
+
+                {adScript && (
+                  <div className="p-3 bg-yellow-500/10 rounded-lg border border-yellow-600/30 mt-2">
+                    <p className="text-xs text-yellow-400 font-bold mb-1">Generated Script</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{adScript}</p>
+                  </div>
+                )}
                 
                 <div className="space-y-2 mt-4">
                   <Label className="text-xs text-muted-foreground">Insertion Mode</Label>

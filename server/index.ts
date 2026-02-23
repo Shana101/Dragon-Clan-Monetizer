@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { requireAuth } from "./auth";
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +22,10 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// JWT auth middleware — uses shared JWT_SECRET for SSO with DCTV/Studio
+// Disabled in dev when JWT_SECRET is not set
+app.use(requireAuth);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

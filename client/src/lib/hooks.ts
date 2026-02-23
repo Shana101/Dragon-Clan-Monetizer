@@ -178,3 +178,66 @@ export function useAnalytics() {
     enabled: !!userId,
   });
 }
+
+// ── AI HOOKS ──
+// These connect to the 6 Azure OpenAI endpoints in server/routes.ts
+
+/** Heidi AI Chat — free-form AI assistant for creators */
+export function useAiChat() {
+  return useMutation<{ reply: string }, Error, { prompt: string; personality?: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("POST", "/api/ai/chat", data);
+      return res.json();
+    },
+  });
+}
+
+/** Podcast Ad Read Generator — generates natural-sounding sponsor reads */
+export function useAiAdRead() {
+  return useMutation<{ script: string }, Error, { sponsorName: string; sponsorDescription?: string; personality?: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("POST", "/api/ai/ad-read", data);
+      return res.json();
+    },
+  });
+}
+
+/** Auto Comment Reply — generates contextual replies to fan comments */
+export function useAiCommentReply() {
+  return useMutation<{ reply: string }, Error, { comment: string; personality?: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("POST", "/api/ai/reply", data);
+      return res.json();
+    },
+  });
+}
+
+/** Social Clip Post — generates platform-specific promo copy for clips */
+export function useAiClipPost() {
+  return useMutation<{ post: string }, Error, { clipDescription: string; platform?: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("POST", "/api/ai/clip-post", data);
+      return res.json();
+    },
+  });
+}
+
+/** Sponsor Match Analyzer — analyzes creator + audience fit for brands */
+export function useAiSponsorMatch() {
+  return useMutation<{ analysis: string }, Error, { creatorBio: string; audienceData?: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("POST", "/api/ai/sponsor-match", data);
+      return res.json();
+    },
+  });
+}
+
+/** Course Outline Generator — turns expertise into structured curriculum */
+export function useAiCourseOutline() {
+  return useMutation<{ outline: string }, Error, { topic: string; expertise?: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("POST", "/api/ai/course-outline", data);
+      return res.json();
+    },
+  });
+}
